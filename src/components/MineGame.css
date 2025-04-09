@@ -804,6 +804,19 @@
         line-height: 1.4;
     }
     
+    .payment-disclaimer .user-transaction {
+        margin-top: 8px;
+        color: #4fe3b1;
+        font-size: 0.75rem;
+        word-break: break-all;
+    }
+    
+    .transaction-pending .user-info {
+        color: #a3a3a3;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+    
     @keyframes spin {
         to {
             transform: rotate(360deg);

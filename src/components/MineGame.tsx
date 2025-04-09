@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '../context/AuthContext'
 import './MineGame.css'
 
 interface GameStats {
@@ -24,6 +25,7 @@ interface UPIPayment {
 }
 
 const MineGame = () => {
+  const { currentUser } = useAuth();
   const gridSize = 5; // 5x5 grid = 25 cells
   const [mines, setMines] = useState<number[]>([]);
   const [revealedCells, setRevealedCells] = useState<number[]>([]);
@@ -50,6 +52,18 @@ const MineGame = () => {
     amount: 10,
     upiId: ''
   });
+
+  // Set user ID in UPI payment
+  useEffect(() => {
+    if (currentUser) {
+      // If user is logged in, update UPI payment info
+      setUpiPayment(prev => ({
+        ...prev,
+        // Pre-fill email as UPI ID if available
+        upiId: currentUser.email ? currentUser.email.split('@')[0] + '@upi' : ''
+      }));
+    }
+  }, [currentUser]);
 
   // Add notification
   const addNotification = (message: string, type: 'success' | 'error' | 'info') => {
@@ -322,7 +336,7 @@ const MineGame = () => {
     addNotification(`Initiating ${upiPayment.mode === 'deposit' ? 'deposit' : 'withdrawal'} transaction...`, 'info');
 
     // In a real implementation, this would connect to a payment gateway API
-    // For now, we'll simulate the API call with a timeout
+    // and associate the transaction with the user's account
     setTimeout(() => {
       if (upiPayment.mode === 'deposit') {
         // Process deposit transaction
@@ -331,6 +345,15 @@ const MineGame = () => {
           `Successfully deposited ₹${upiPayment.amount} through UPI (ID: ${transactionId})`, 
           'success'
         );
+        
+        // In a real app, would record this transaction to the user's account
+        console.log('Transaction recorded for user:', currentUser?.uid, {
+          id: transactionId,
+          type: upiPayment.mode,
+          amount: upiPayment.amount,
+          upiId: upiPayment.upiId,
+          timestamp: new Date().toISOString()
+        });
       } else {
         // Process withdrawal transaction
         setBalance(prev => prev - upiPayment.amount);
@@ -373,6 +396,9 @@ const MineGame = () => {
               <div className="spinner"></div>
               <p>Processing your transaction...</p>
               <p className="transaction-id">ID: {upiPayment.transactionId}</p>
+              {currentUser && (
+                <p className="user-info">Account: {currentUser.displayName}</p>
+              )}
             </div>
           ) : (
             <>
@@ -408,6 +434,9 @@ const MineGame = () => {
               
               <div className="payment-disclaimer">
                 <p>By proceeding, you agree to our payment terms and conditions.</p>
+                {currentUser && (
+                  <p className="user-transaction">Transaction will be linked to your account: {currentUser.email}</p>
+                )}
               </div>
               
               <div className="modal-actions">
