@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import googleLogo from '../assets/google-logo.svg';
 import './Login.css';
 
 const Login = () => {
@@ -45,7 +46,7 @@ const Login = () => {
           ) : (
             <>
               <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" 
+                src={googleLogo} 
                 alt="Google Logo" 
                 className="google-logo" 
               />
