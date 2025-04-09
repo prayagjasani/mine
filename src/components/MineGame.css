@@ -1,10 +1,13 @@
     .mine-game {
         width: 100%;
-        min-height: 100vh;
+        min-height: 100%;
         background-color: #0f212e;
         color: #e4e4e4;
         padding: 20px;
         font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
     }
     
     .game-container {
@@ -14,6 +17,7 @@
         margin: 0 auto;
         align-items: flex-start;
         justify-content: center;
+        flex: 1;
     }
     
     .game-controls {
@@ -25,11 +29,13 @@
     
     .control-panel,
     .stats-panel {
-        background-color: #182b38;
+        background-color: rgba(24, 43, 56, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid #26394a;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .control-group {
@@ -83,26 +89,23 @@
     .game-button {
         padding: 14px;
         border: none;
-        border-radius: 6px;
+        border-radius: 12px;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-size: 0.9rem;
-    }
-    
-    .game-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
     
     .game-button:active {
-        transform: translateY(1px);
+        transform: translateY(2px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
     .start-button {
-        background-color: #4fe3b1;
+        background: linear-gradient(135deg, #4fe3b1, #3bc596);
         color: #0f212e;
     }
     
@@ -115,7 +118,7 @@
     }
     
     .cashout-button {
-        background-color: #ff9c40;
+        background: linear-gradient(135deg, #ff9c40, #ff7e21);
         color: #0f212e;
     }
     
@@ -128,13 +131,15 @@
     }
     
     .payout-info {
-        background-color: #182b38;
+        background-color: rgba(24, 43, 56, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         padding: 18px;
-        border-radius: 8px;
+        border-radius: 12px;
         display: flex;
         justify-content: space-around;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid #26394a;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .mine-grid {
@@ -143,10 +148,12 @@
         grid-template-rows: repeat(5, 60px);
         grid-gap: 10px;
         padding: 20px;
-        background-color: #182b38;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid #26394a;
+        background-color: rgba(24, 43, 56, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         width: fit-content;
         margin: 0 auto;
     }
@@ -156,7 +163,7 @@
         width: 60px;
         height: 60px;
         background-color: #26394a;
-        border-radius: 8px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -166,6 +173,7 @@
         border: 2px solid #26394a;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        -webkit-tap-highlight-color: transparent;
     }
     
     .mine-cell:hover {
@@ -212,10 +220,13 @@
     }
     
     @media (max-width: 768px) {
+        .mine-game {
+            padding: 10px;
+        }
         .game-container {
             flex-direction: column;
-            gap: 20px;
-            padding: 0 10px;
+            gap: 15px;
+            padding: 0;
         }
         .game-controls {
             width: 100%;
@@ -232,19 +243,22 @@
             grid-template-rows: repeat(5, 1fr);
             aspect-ratio: 1 / 1;
             grid-gap: 8px;
-            padding: 15px;
+            padding: 12px;
+            max-width: 360px;
         }
         .mine-cell {
             width: auto;
             height: auto;
             min-height: 40px;
             min-width: 40px;
-            font-size: 16px;
+            font-size: 18px;
+            border-radius: 8px;
         }
         .payout-info {
             flex-direction: row;
             flex-wrap: wrap;
             gap: 10px;
+            padding: 12px;
         }
         .payout-info>div {
             flex: 1 0 30%;
@@ -254,34 +268,86 @@
             max-width: 90%;
             left: 5%;
             right: 5%;
-        }
-    }
-    /* Even smaller screens (phones) */
-    
-    @media (max-width: 480px) {
-        .mine-grid {
-            grid-gap: 6px;
-            padding: 10px;
-        }
-        .mine-cell {
-            min-height: 35px;
-            min-width: 35px;
-            border-width: 1px;
-            font-size: 14px;
+            top: 10px;
         }
         .control-panel,
         .stats-panel {
             padding: 15px;
+            border-radius: 10px;
         }
         .game-button {
             padding: 12px;
+            border-radius: 10px;
+        }
+    }
+    /* For iPhone-size screens */
+    
+    @media (max-width: 380px) {
+        .mine-grid {
+            grid-gap: 6px;
+            padding: 10px;
+            max-width: 300px;
+        }
+        .mine-cell {
+            min-height: 30px;
+            min-width: 30px;
+            border-width: 1px;
+            font-size: 16px;
+            border-radius: 6px;
+        }
+        .control-panel,
+        .stats-panel {
+            padding: 12px;
+        }
+        .game-button {
+            padding: 10px;
             font-size: 0.8rem;
         }
         .info-value {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
-        .app-title {
-            font-size: 2rem;
+    }
+    /* For landscape orientation on mobile */
+    
+    @media (max-height: 500px) and (orientation: landscape) {
+        .mine-game {
+            padding: 5px;
+        }
+        .game-container {
+            flex-direction: row;
+            gap: 10px;
+        }
+        .game-controls {
+            width: 250px;
+            order: 0;
+        }
+        .game-board {
+            order: 0;
+        }
+        .mine-grid {
+            grid-gap: 5px;
+            padding: 8px;
+        }
+        .mine-cell {
+            min-height: 35px;
+            min-width: 35px;
+            font-size: 16px;
+        }
+        .control-panel,
+        .stats-panel {
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .game-button {
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .info-label {
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+        }
+        .info-value {
+            font-size: 0.9rem;
         }
     }
     
@@ -305,11 +371,13 @@
     
     .notification {
         padding: 16px;
-        border-radius: 8px;
+        border-radius: 12px;
         color: white;
         animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-out 2.5s forwards;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
     }
     
     .notification.success {
