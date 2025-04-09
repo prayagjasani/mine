@@ -19,6 +19,8 @@ interface UPIPayment {
   mode: 'deposit' | 'withdraw';
   amount: number;
   upiId: string;
+  transactionId?: string;
+  status?: 'pending' | 'completed' | 'failed';
 }
 
 const MineGame = () => {
@@ -27,11 +29,11 @@ const MineGame = () => {
   const [revealedCells, setRevealedCells] = useState<number[]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [isWinner, setIsWinner] = useState(false);
-  const [betAmount, setBetAmount] = useState(1);
+  const [betAmount, setBetAmount] = useState(10);
   const [mineCount, setMineCount] = useState(5);
   const [currentMultiplier, setCurrentMultiplier] = useState(1);
   const [currentPayout, setCurrentPayout] = useState(0);
-  const [balance, setBalance] = useState(10); // Starting balance reduced to $10
+  const [balance, setBalance] = useState(10); // Starting balance
   const [gameStats, setGameStats] = useState<GameStats>({
     wins: 0,
     losses: 0,
@@ -116,6 +118,12 @@ const MineGame = () => {
       return;
     }
 
+    // Check minimum bet amount for real money
+    if (betAmount < 10) {
+      addNotification("Minimum bet amount is ₹10 for real money games.", 'error');
+      return;
+    }
+
     setBalance(prev => prev - betAmount);
     setRevealedCells([]);
     setGameOver(false);
@@ -149,7 +157,7 @@ const MineGame = () => {
           totalProfit: prev.totalProfit - betAmount
         }));
         
-        addNotification(`Boom! Game Over. You hit a mine and lost ${betAmount} coins.`, 'error');
+        addNotification(`Boom! Game Over. You hit a mine and lost ₹${betAmount.toFixed(2)}.`, 'error');
       } else {
         // Reveal a safe cell
         const newRevealedCells = [...revealedCells, index];
@@ -187,7 +195,7 @@ const MineGame = () => {
             totalProfit: prev.totalProfit + (winAmount - betAmount)
           }));
           
-          addNotification(`Congratulations! You won ${winAmount.toFixed(2)} coins!`, 'success');
+          addNotification(`Congratulations! You won ₹${winAmount.toFixed(2)}!`, 'success');
         }
       }
 
@@ -213,7 +221,7 @@ const MineGame = () => {
       totalProfit: prev.totalProfit + (winAmount - betAmount)
     }));
     
-    addNotification(`Cashed Out! You won ${winAmount.toFixed(2)} coins with a ${currentMultiplier.toFixed(2)}x multiplier!`, 'success');
+    addNotification(`Cashed Out! You won ₹${winAmount.toFixed(2)} with a ${currentMultiplier.toFixed(2)}x multiplier!`, 'success');
   };
 
   // Generate the grid cells
@@ -263,7 +271,7 @@ const MineGame = () => {
 
   // Format number with a plus sign if positive
   const formatNumber = (num: number) => {
-    return num > 0 ? `+${num.toFixed(2)}` : num.toFixed(2);
+    return num > 0 ? `+₹${num.toFixed(2)}` : `₹${num.toFixed(2)}`;
   };
 
   // Open UPI payment modal
@@ -301,18 +309,54 @@ const MineGame = () => {
       return;
     }
 
-    // In a real app, this would connect to a payment gateway
-    // For this demo, we'll simulate the payment process
+    // Generate a unique transaction ID
+    const transactionId = `TXN_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     
-    if (upiPayment.mode === 'deposit') {
-      setBalance(prev => prev + upiPayment.amount);
-      addNotification(`Successfully deposited $${upiPayment.amount} through UPI`, 'success');
-    } else {
-      setBalance(prev => prev - upiPayment.amount);
-      addNotification(`Successfully withdrew $${upiPayment.amount} to UPI ID ${upiPayment.upiId}`, 'success');
-    }
+    // Set transaction to pending status
+    setUpiPayment(prev => ({
+      ...prev,
+      status: 'pending',
+      transactionId
+    }));
 
-    closeUpiPayment();
+    addNotification(`Initiating ${upiPayment.mode === 'deposit' ? 'deposit' : 'withdrawal'} transaction...`, 'info');
+
+    // In a real implementation, this would connect to a payment gateway API
+    // For now, we'll simulate the API call with a timeout
+    setTimeout(() => {
+      if (upiPayment.mode === 'deposit') {
+        // Process deposit transaction
+        setBalance(prev => prev + upiPayment.amount);
+        addNotification(
+          `Successfully deposited ₹${upiPayment.amount} through UPI (ID: ${transactionId})`, 
+          'success'
+        );
+      } else {
+        // Process withdrawal transaction
+        setBalance(prev => prev - upiPayment.amount);
+        addNotification(
+          `Successfully withdrew ₹${upiPayment.amount} to UPI ID ${upiPayment.upiId} (ID: ${transactionId})`, 
+          'success'
+        );
+      }
+
+      // Update transaction status
+      setUpiPayment(prev => ({
+        ...prev,
+        status: 'completed'
+      }));
+
+      // Log transaction for backend
+      console.log('Transaction completed:', {
+        id: transactionId,
+        type: upiPayment.mode,
+        amount: upiPayment.amount,
+        upiId: upiPayment.upiId,
+        timestamp: new Date().toISOString()
+      });
+
+      closeUpiPayment();
+    }, 2000); // Simulate 2-second processing time
   };
 
   // Render UPI payment modal
@@ -324,42 +368,56 @@ const MineGame = () => {
         <div className="modal-content">
           <h3>{upiPayment.mode === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
           
-          <div className="form-group">
-            <label>
-              Amount:
-              <input 
-                type="number" 
-                min="1" 
-                value={upiPayment.amount}
-                onChange={(e) => setUpiPayment(prev => ({
-                  ...prev,
-                  amount: Number(e.target.value)
-                }))}
-              />
-            </label>
-          </div>
-          
-          <div className="form-group">
-            <label>
-              UPI ID:
-              <input 
-                type="text" 
-                placeholder="yourname@upi"
-                value={upiPayment.upiId}
-                onChange={(e) => setUpiPayment(prev => ({
-                  ...prev,
-                  upiId: e.target.value
-                }))}
-              />
-            </label>
-          </div>
-          
-          <div className="modal-actions">
-            <button className="cancel-button" onClick={closeUpiPayment}>Cancel</button>
-            <button className="confirm-button" onClick={handleUpiPayment}>
-              {upiPayment.mode === 'deposit' ? 'Deposit' : 'Withdraw'}
-            </button>
-          </div>
+          {upiPayment.status === 'pending' ? (
+            <div className="transaction-pending">
+              <div className="spinner"></div>
+              <p>Processing your transaction...</p>
+              <p className="transaction-id">ID: {upiPayment.transactionId}</p>
+            </div>
+          ) : (
+            <>
+              <div className="form-group">
+                <label>
+                  Amount (₹):
+                  <input 
+                    type="number" 
+                    min="1" 
+                    value={upiPayment.amount}
+                    onChange={(e) => setUpiPayment(prev => ({
+                      ...prev,
+                      amount: Number(e.target.value)
+                    }))}
+                  />
+                </label>
+              </div>
+              
+              <div className="form-group">
+                <label>
+                  UPI ID:
+                  <input 
+                    type="text" 
+                    placeholder="yourname@upi"
+                    value={upiPayment.upiId}
+                    onChange={(e) => setUpiPayment(prev => ({
+                      ...prev,
+                      upiId: e.target.value
+                    }))}
+                  />
+                </label>
+              </div>
+              
+              <div className="payment-disclaimer">
+                <p>By proceeding, you agree to our payment terms and conditions.</p>
+              </div>
+              
+              <div className="modal-actions">
+                <button className="cancel-button" onClick={closeUpiPayment}>Cancel</button>
+                <button className="confirm-button" onClick={handleUpiPayment}>
+                  {upiPayment.mode === 'deposit' ? 'Deposit Now' : 'Withdraw Now'}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     );
@@ -372,7 +430,7 @@ const MineGame = () => {
       <div className="game-container">
         <div className="game-controls">
           <div className="control-panel">
-            <h3>Balance: <span className="highlight">${balance.toFixed(2)}</span></h3>
+            <h3>Balance: <span className="highlight">{balance.toFixed(2)}</span></h3>
             
             <div className="payment-actions">
               <button 
@@ -392,11 +450,12 @@ const MineGame = () => {
             
             <div className="control-group">
               <label>
-                Bet Amount: ${betAmount.toFixed(2)}
+                Bet Amount: ₹{betAmount.toFixed(2)}
                 <input 
                   type="range" 
-                  min="1" 
-                  max="100" 
+                  min="10" 
+                  max="1000" 
+                  step="10"
                   value={betAmount}
                   onChange={(e) => setBetAmount(Number(e.target.value))}
                   disabled={mines.length > 0 && !gameOver}
@@ -424,7 +483,7 @@ const MineGame = () => {
             <p>Wins: <span className="stat-value">{gameStats.wins}</span></p>
             <p>Losses: <span className="stat-value">{gameStats.losses}</span></p>
             <p>Profit: <span className={`stat-value ${gameStats.totalProfit >= 0 ? "positive" : "negative"}`}>
-              ${formatNumber(gameStats.totalProfit)}
+              {formatNumber(gameStats.totalProfit)}
             </span></p>
           </div>
           
@@ -442,7 +501,7 @@ const MineGame = () => {
               onClick={cashOut}
               disabled={isRevealing}
             >
-              Cash Out ${currentPayout.toFixed(2)}
+              Cash Out ₹{currentPayout.toFixed(2)}
             </button>
           )}
         </div>
@@ -455,7 +514,7 @@ const MineGame = () => {
             </div>
             <div>
               <p className="info-label">Potential Payout</p>
-              <p className="info-value">${currentPayout.toFixed(2)}</p>
+              <p className="info-value">₹{currentPayout.toFixed(2)}</p>
             </div>
             <div>
               <p className="info-label">Safe Cells</p>
@@ -470,8 +529,8 @@ const MineGame = () => {
           {gameOver && (
             <div className={`game-result ${isWinner ? "win" : "lose"}`}>
               {isWinner ? 
-                `You won $${currentPayout.toFixed(2)} with a ${currentMultiplier.toFixed(2)}x multiplier!` : 
-                `Game over! You lost $${betAmount.toFixed(2)}`}
+                `You won ₹${currentPayout.toFixed(2)} with a ${currentMultiplier.toFixed(2)}x multiplier!` : 
+                `Game over! You lost ₹${betAmount.toFixed(2)}`}
             </div>
           )}
         </div>

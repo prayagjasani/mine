@@ -761,3 +761,96 @@
             padding: 10px;
         }
     }
+    /* Transaction processing styles */
+    
+    .transaction-pending {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(79, 227, 177, 0.2);
+        border-radius: 50%;
+        border-top-color: #4fe3b1;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    
+    .transaction-id {
+        color: #a3a3a3;
+        font-size: 0.8rem;
+        margin-top: 10px;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+    
+    .payment-disclaimer {
+        margin: 20px 0;
+        padding: 10px;
+        border-radius: 6px;
+        background-color: rgba(79, 175, 255, 0.1);
+        border-left: 3px solid #4fabff;
+    }
+    
+    .payment-disclaimer p {
+        color: #a3a3a3;
+        font-size: 0.8rem;
+        margin: 0;
+        line-height: 1.4;
+    }
+    
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    /* Adjust existing modal styles for better payment UX */
+    
+    .form-group input {
+        font-size: 1.2rem;
+    }
+    
+    .form-group input[type="number"] {
+        font-weight: bold;
+    }
+    
+    .modal-content h3 {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+    }
+    /* Currency symbol styling for balance display */
+    
+    .highlight {
+        position: relative;
+    }
+    
+    .control-panel h3 .highlight::before {
+        content: "₹";
+        font-size: 0.9em;
+    }
+    /* Update existing payment button styles */
+    
+    .deposit-button {
+        background: linear-gradient(135deg, #4fabff, #3b8cd6);
+        color: white;
+    }
+    
+    .withdraw-button {
+        background: linear-gradient(135deg, #ff9c40, #ff7e21);
+        color: white;
+    }
+    
+    .payment-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .confirm-button {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
