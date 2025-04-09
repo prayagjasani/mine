@@ -18,7 +18,8 @@ function App() {
         <footer className="app-footer">
           <div className="footer-content">
             <p>&copy; {new Date().getFullYear()} Mine Game - For demonstration purposes only</p>
-            <p className="disclaimer">This game involves simulated gambling mechanics with no real money.</p>
+            <p className="disclaimer">This game involves simulated gambling mechanics. UPI deposits and withdrawals are for demo purposes only.</p>
+            <p className="disclaimer">No real money is involved and no actual UPI transactions will be processed.</p>
           </div>
         </footer>
       </div>

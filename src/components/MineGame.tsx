@@ -13,6 +13,14 @@ interface Notification {
   id: number;
 }
 
+// UPI Payment interface
+interface UPIPayment {
+  isOpen: boolean;
+  mode: 'deposit' | 'withdraw';
+  amount: number;
+  upiId: string;
+}
+
 const MineGame = () => {
   const gridSize = 5; // 5x5 grid = 25 cells
   const [mines, setMines] = useState<number[]>([]);
@@ -23,7 +31,7 @@ const MineGame = () => {
   const [mineCount, setMineCount] = useState(5);
   const [currentMultiplier, setCurrentMultiplier] = useState(1);
   const [currentPayout, setCurrentPayout] = useState(0);
-  const [balance, setBalance] = useState(1000); // Starting balance
+  const [balance, setBalance] = useState(10); // Starting balance reduced to $10
   const [gameStats, setGameStats] = useState<GameStats>({
     wins: 0,
     losses: 0,
@@ -33,6 +41,13 @@ const MineGame = () => {
   const [isRevealing, setIsRevealing] = useState(false);
   const [lastRevealed, setLastRevealed] = useState<number | null>(null);
   const [hoveredCell, setHoveredCell] = useState<number | null>(null);
+  // UPI payment state
+  const [upiPayment, setUpiPayment] = useState<UPIPayment>({
+    isOpen: false,
+    mode: 'deposit',
+    amount: 10,
+    upiId: ''
+  });
 
   // Add notification
   const addNotification = (message: string, type: 'success' | 'error' | 'info') => {
@@ -251,13 +266,129 @@ const MineGame = () => {
     return num > 0 ? `+${num.toFixed(2)}` : num.toFixed(2);
   };
 
+  // Open UPI payment modal
+  const openUpiPayment = (mode: 'deposit' | 'withdraw') => {
+    setUpiPayment({
+      isOpen: true,
+      mode,
+      amount: 10,
+      upiId: ''
+    });
+  };
+
+  // Close UPI payment modal
+  const closeUpiPayment = () => {
+    setUpiPayment(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+  };
+
+  // Handle UPI payment submission
+  const handleUpiPayment = () => {
+    if (!upiPayment.upiId) {
+      addNotification('Please enter a valid UPI ID', 'error');
+      return;
+    }
+
+    if (upiPayment.amount <= 0) {
+      addNotification('Please enter a valid amount', 'error');
+      return;
+    }
+
+    if (upiPayment.mode === 'withdraw' && upiPayment.amount > balance) {
+      addNotification('Insufficient balance for withdrawal', 'error');
+      return;
+    }
+
+    // In a real app, this would connect to a payment gateway
+    // For this demo, we'll simulate the payment process
+    
+    if (upiPayment.mode === 'deposit') {
+      setBalance(prev => prev + upiPayment.amount);
+      addNotification(`Successfully deposited $${upiPayment.amount} through UPI`, 'success');
+    } else {
+      setBalance(prev => prev - upiPayment.amount);
+      addNotification(`Successfully withdrew $${upiPayment.amount} to UPI ID ${upiPayment.upiId}`, 'success');
+    }
+
+    closeUpiPayment();
+  };
+
+  // Render UPI payment modal
+  const renderUpiPaymentModal = () => {
+    if (!upiPayment.isOpen) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h3>{upiPayment.mode === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
+          
+          <div className="form-group">
+            <label>
+              Amount:
+              <input 
+                type="number" 
+                min="1" 
+                value={upiPayment.amount}
+                onChange={(e) => setUpiPayment(prev => ({
+                  ...prev,
+                  amount: Number(e.target.value)
+                }))}
+              />
+            </label>
+          </div>
+          
+          <div className="form-group">
+            <label>
+              UPI ID:
+              <input 
+                type="text" 
+                placeholder="yourname@upi"
+                value={upiPayment.upiId}
+                onChange={(e) => setUpiPayment(prev => ({
+                  ...prev,
+                  upiId: e.target.value
+                }))}
+              />
+            </label>
+          </div>
+          
+          <div className="modal-actions">
+            <button className="cancel-button" onClick={closeUpiPayment}>Cancel</button>
+            <button className="confirm-button" onClick={handleUpiPayment}>
+              {upiPayment.mode === 'deposit' ? 'Deposit' : 'Withdraw'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="mine-game">
       {renderNotifications()}
+      {renderUpiPaymentModal()}
       <div className="game-container">
         <div className="game-controls">
           <div className="control-panel">
             <h3>Balance: <span className="highlight">${balance.toFixed(2)}</span></h3>
+            
+            <div className="payment-actions">
+              <button 
+                className="payment-button deposit-button"
+                onClick={() => openUpiPayment('deposit')}
+              >
+                Deposit
+              </button>
+              <button 
+                className="payment-button withdraw-button"
+                onClick={() => openUpiPayment('withdraw')}
+                disabled={balance <= 0}
+              >
+                Withdraw
+              </button>
+            </div>
             
             <div className="control-group">
               <label>
