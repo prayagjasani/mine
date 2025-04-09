@@ -1,0 +1,534 @@
+    .mine-game {
+        width: 100%;
+        min-height: 100vh;
+        background-color: #0f212e;
+        color: #e4e4e4;
+        padding: 20px;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .game-container {
+        display: flex;
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    
+    .game-controls {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .control-panel,
+    .stats-panel {
+        background-color: #182b38;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid #26394a;
+    }
+    
+    .control-group {
+        margin-bottom: 15px;
+    }
+    
+    .control-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: #a3a3a3;
+        font-size: 0.9rem;
+    }
+    
+    .control-group input[type="range"] {
+        width: 100%;
+        margin-top: 12px;
+        -webkit-appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: #26394a;
+        outline: none;
+    }
+    
+    .control-group input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #4fe3b1;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 0 4px rgba(79, 227, 177, 0.2);
+        transition: all 0.2s;
+    }
+    
+    .control-group input[type="range"]::-webkit-slider-thumb:hover {
+        box-shadow: 0 0 0 6px rgba(79, 227, 177, 0.3);
+    }
+    
+    .control-group input[type="range"]::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #4fe3b1;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 0 0 4px rgba(79, 227, 177, 0.2);
+        transition: all 0.2s;
+    }
+    
+    .game-button {
+        padding: 14px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+    }
+    
+    .game-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .game-button:active {
+        transform: translateY(1px);
+    }
+    
+    .start-button {
+        background-color: #4fe3b1;
+        color: #0f212e;
+    }
+    
+    .start-button:disabled {
+        background-color: #26394a;
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .cashout-button {
+        background-color: #ff9c40;
+        color: #0f212e;
+    }
+    
+    .game-board {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 500px;
+    }
+    
+    .payout-info {
+        background-color: #182b38;
+        padding: 18px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-around;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid #26394a;
+    }
+    
+    .mine-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 60px);
+        grid-template-rows: repeat(5, 60px);
+        grid-gap: 10px;
+        padding: 20px;
+        background-color: #182b38;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid #26394a;
+        width: fit-content;
+        margin: 0 auto;
+    }
+    
+    .mine-cell {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        background-color: #26394a;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 24px;
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid #26394a;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .mine-cell:hover {
+        background-color: #304b60;
+        transform: scale(1.05);
+        border-color: #4fe3b1;
+        z-index: 1;
+    }
+    
+    .mine-cell.revealed {
+        background-color: #4fe3b1;
+        cursor: default;
+        border-color: #4fe3b1;
+        animation: revealPulse 0.5s ease-out;
+    }
+    
+    .mine-cell.mine {
+        background-color: #ff4d6b;
+        cursor: default;
+        border-color: #ff4d6b;
+        animation: mineExplode 0.6s ease-out;
+    }
+    
+    .game-result {
+        padding: 18px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        margin-top: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        animation: resultAppear 0.4s ease-out;
+    }
+    
+    .game-result.win {
+        background-color: #4fe3b1;
+        color: #0f212e;
+        border: 1px solid #3bc596;
+    }
+    
+    .game-result.lose {
+        background-color: #ff4d6b;
+        color: white;
+        border: 1px solid #e43456;
+    }
+    
+    @media (max-width: 768px) {
+        .game-container {
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 10px;
+        }
+        .game-controls {
+            width: 100%;
+            order: 2;
+        }
+        .game-board {
+            width: 100%;
+            max-width: 100%;
+            order: 1;
+        }
+        .mine-grid {
+            width: 100%;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            aspect-ratio: 1 / 1;
+            grid-gap: 8px;
+            padding: 15px;
+        }
+        .mine-cell {
+            width: auto;
+            height: auto;
+            min-height: 40px;
+            min-width: 40px;
+            font-size: 16px;
+        }
+        .payout-info {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .payout-info>div {
+            flex: 1 0 30%;
+            text-align: center;
+        }
+        .notification-container {
+            max-width: 90%;
+            left: 5%;
+            right: 5%;
+        }
+    }
+    /* Even smaller screens (phones) */
+    
+    @media (max-width: 480px) {
+        .mine-grid {
+            grid-gap: 6px;
+            padding: 10px;
+        }
+        .mine-cell {
+            min-height: 35px;
+            min-width: 35px;
+            border-width: 1px;
+            font-size: 14px;
+        }
+        .control-panel,
+        .stats-panel {
+            padding: 15px;
+        }
+        .game-button {
+            padding: 12px;
+            font-size: 0.8rem;
+        }
+        .info-value {
+            font-size: 1rem;
+        }
+        .app-title {
+            font-size: 2rem;
+        }
+    }
+    
+    .highlight {
+        color: #4fe3b1;
+        font-weight: bold;
+        font-size: 1.1em;
+        text-shadow: 0 0 10px rgba(79, 227, 177, 0.3);
+    }
+    
+    .notification-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 300px;
+    }
+    
+    .notification {
+        padding: 16px;
+        border-radius: 8px;
+        color: white;
+        animation: slideIn 0.3s ease-out forwards, fadeOut 0.5s ease-out 2.5s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .notification.success {
+        background-color: #4fe3b1;
+        color: #0f212e;
+        border-left: 4px solid #3bc596;
+    }
+    
+    .notification.error {
+        background-color: #ff4d6b;
+        border-left: 4px solid #e43456;
+    }
+    
+    .notification.info {
+        background-color: #4fabff;
+        border-left: 4px solid #3b8cd6;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+    }
+    
+    @keyframes revealPulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(79, 227, 177, 0.7);
+        }
+        50% {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 10px rgba(79, 227, 177, 0);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes mineExplode {
+        0% {
+            transform: scale(1);
+        }
+        10% {
+            transform: scale(1.15);
+        }
+        20% {
+            transform: scale(0.95);
+        }
+        30% {
+            transform: scale(1.08);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes resultAppear {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Additional styles for payout info */
+    
+    .info-label {
+        color: #a3a3a3;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+    
+    .info-value {
+        color: #4fe3b1;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    /* Game stats styling */
+    
+    .stat-value {
+        font-weight: bold;
+        margin-left: 5px;
+    }
+    
+    .stat-value.positive {
+        color: #4fe3b1;
+    }
+    
+    .stat-value.negative {
+        color: #ff4d6b;
+    }
+    /* Cell animations and effects */
+    
+    .mine-cell .cell-glow {
+        position: absolute;
+        inset: 0;
+        border-radius: 6px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .mine-cell:hover .cell-glow {
+        opacity: 0.3;
+        background: radial-gradient(circle, rgba(79, 227, 177, 0.3) 0%, rgba(79, 227, 177, 0) 70%);
+    }
+    
+    .mine-cell.hovered {
+        transform: scale(1.05);
+        border-color: #4fe3b1;
+        box-shadow: 0 0 15px rgba(79, 227, 177, 0.3);
+        z-index: 5;
+    }
+    
+    .mine-cell.last-revealed {
+        z-index: 2;
+    }
+    
+    .mine-cell.revealed.last-revealed {
+        animation: lastRevealPulse 0.6s ease-out;
+    }
+    
+    .mine-cell.mine.last-revealed {
+        animation: lastMineExplode 0.6s ease-out;
+    }
+    /* Grid state animations */
+    
+    .mine-grid.revealing {
+        pointer-events: none;
+    }
+    
+    .mine-grid.winner {
+        animation: gridWin 1s ease-out;
+    }
+    
+    .mine-grid.loser {
+        animation: gridLose 0.5s ease-out;
+    }
+    /* Additional animations */
+    
+    @keyframes lastRevealPulse {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(79, 227, 177, 0.7);
+        }
+        50% {
+            transform: scale(1.12);
+            box-shadow: 0 0 0 15px rgba(79, 227, 177, 0);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes lastMineExplode {
+        0% {
+            transform: scale(1);
+        }
+        10% {
+            transform: scale(1.2);
+        }
+        20% {
+            transform: scale(0.85);
+        }
+        30% {
+            transform: scale(1.1);
+        }
+        40% {
+            transform: scale(0.9);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes gridWin {
+        0% {
+            box-shadow: 0 0 0 0 rgba(79, 227, 177, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 0 15px rgba(79, 227, 177, 0.1);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(79, 227, 177, 0);
+        }
+    }
+    
+    @keyframes gridLose {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255, 77, 107, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 0 15px rgba(255, 77, 107, 0.1);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(255, 77, 107, 0);
+        }
+    }

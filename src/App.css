@@ -1,0 +1,136 @@
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+        animation: logo-spin infinite 20s linear;
+    }
+}
+
+.card {
+    padding: 2em;
+}
+
+.read-the-docs {
+    color: #888;
+}
+
+.app {
+    background-color: #0f212e;
+    color: #e4e4e4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.app-title {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #4fe3b1, #ff9c40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+    color: #a3a3a3;
+    font-size: 1rem;
+}
+
+main {
+    width: 100%;
+}
+
+.app-footer {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #26394a;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.disclaimer {
+    font-size: 0.8rem;
+    color: #a3a3a3;
+    margin-top: 0.5rem;
+}
+
+
+/* Mobile responsiveness */
+
+@media (max-width: 768px) {
+    .app {
+        padding: 1rem;
+    }
+    .app-title {
+        font-size: 2rem;
+    }
+    .app-subtitle {
+        font-size: 0.9rem;
+    }
+    .app-footer {
+        margin-top: 1.5rem;
+        padding: 1rem 0;
+    }
+    .footer-content {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app {
+        padding: 0.75rem;
+    }
+    .app-title {
+        font-size: 1.8rem;
+    }
+    .app-subtitle {
+        font-size: 0.8rem;
+    }
+    .disclaimer {
+        font-size: 0.7rem;
+    }
+}
